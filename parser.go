@@ -21,17 +21,26 @@ type Parser struct {
 
 func getSpecialNginxRegexes() map[string]string {
 	return map[string]string{
-		"http_x_forwarded_for": `[^ ]*(, [^ ]+)*`,
-		"remote_user":          `[^"]*`}
+		"http_x_forwarded_for": `[^, ]*(?:, ?[^, ]+)*`}
 }
 
 // NewParser returns a new Parser, use given log format to create its internal
 // strings parsing regexp.
 func NewParser(format string) *Parser {
-	formatRegex := regexp.MustCompile(`([^ ]*)\$([a-z_]+)([^ ]*)([ ]?)`)
+	// First split up multiple concatenated fields with placeholder
+	placeholder := " _PLACEHOLDER___ "
+	preparedFormat := format
+	concatenatedRe := regexp.MustCompile(`[A-Za-z0-9_]\$[A-Za-z0-9_]`)
+	for concatenatedRe.MatchString(preparedFormat) {
+		preparedFormat = regexp.MustCompile(`([A-Za-z0-9_])\$([A-Za-z0-9_]+)(\\?([^$\\A-Za-z0-9_]))`).ReplaceAllString(
+			preparedFormat, fmt.Sprintf("${1}${3}%s$$${2}${3}", placeholder),
+		)
+	}
+
+	formatRegex := regexp.MustCompile(`([^$ ]*)\$([a-z_]+)([^$ ]*)([ ]?)`)
 	specialNginxRegexes := getSpecialNginxRegexes()
-	fields := formatRegex.FindAllStringSubmatch(format+" ", -1)
-	re := formatRegex.ReplaceAllString(format+" ", "$2$4")
+	fields := formatRegex.FindAllStringSubmatch(preparedFormat+" ", -1)
+	re := formatRegex.ReplaceAllString(preparedFormat+" ", "$2$4")
 	for _, field := range fields {
 		terminateChar := field[3]
 		if len([]rune(terminateChar)) == 0 {
@@ -43,6 +52,9 @@ func NewParser(format string) *Parser {
 			re = strings.Replace(re, field[2]+field[4], regexp.QuoteMeta(field[1])+"(?P<"+field[2]+">[^"+terminateChar+"]*)"+regexp.QuoteMeta(field[3]+field[4]), 1)
 		}
 	}
+
+	// Finally remove placeholder
+	re = regexp.MustCompile(fmt.Sprintf(".%s", placeholder)).ReplaceAllString(re, "")
 	return &Parser{format, regexp.MustCompile(fmt.Sprintf("^%v", strings.Trim(re, " ")))}
 }
 
