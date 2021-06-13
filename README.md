@@ -1,4 +1,4 @@
-# gonx [![Build Status](https://travis-ci.org/satyrius/gonx.svg)](https://travis-ci.org/satyrius/gonx) [![Go Report Card](https://goreportcard.com/badge/github.com/satyrius/gonx)](https://goreportcard.com/report/github.com/satyrius/gonx)
+# gonx [![Build Status](https://travis-ci.org/iggy/gonx.svg)](https://travis-ci.org/iggy/gonx) [![Go Report Card](https://goreportcard.com/badge/github.com/iggy/gonx)](https://goreportcard.com/report/github.com/iggy/gonx) [![Docs](https://pkg.go.dev/github.com/iggy/gonx)](https://pkg.go.dev/github.com/iggy/gonx)
 
 `gonx` is Nginx access log reader library for `Go`. In fact you can use it for any format.
 
@@ -44,7 +44,7 @@ I have a few benchmarks for parsing `string` log record into `Entry` using `gonx
 	BenchmarkParseSimpleLogRecord      100000            19457 ns/op
 	BenchmarkParseLogRecord             20000            84425 ns/op
 
-And here is some real wold stats. I got ~300Mb log file with ~700K records and process with [simple scripts](https://github.com/satyrius/gonx/tree/master/benchmarks).
+And here are some real world stats. I got ~300Mb log file with ~700K records and process with [simple scripts](https://github.com/iggy/gonx/tree/master/benchmarks).
 
 * Reading whole file line by line with `bufio.Scanner` without any other processing takes a *one second*.
 * Read in the same manner plus parsing with `gonx.Parser` takes *about 80 seconds*
@@ -52,8 +52,8 @@ And here is some real wold stats. I got ~300Mb log file with ~700K records and p
 
 ## Format
 
-As I said above this library is primary for nginx access log parsing, but it can be configured to parse any
-other format. `NewReader` accepts `format` argument, it will be transformed to regular expression and used
+As I said above this library is primarily for nginx access log parsing, but it can be configured to parse any
+other format. `NewReader` accepts a `format` argument, it will be transformed to regular expression and used
 for log line by line parsing. Format is nginx-like, here is example
 
 	`$remote_addr [$time_local] "$request"`
@@ -77,11 +77,11 @@ capability will be supported for the following public interfaces.
 
 ## Changelog
 
-All major changes will be noticed in [release notes](https://github.com/satyrius/gonx/releases).
+All major changes will be noticed in [release notes](https://github.com/iggy/gonx/releases).
 
 ## Roadmap
 
-I have no roadmap for this project at the moment for a few reasons. At the first, it is a simple library and I want to keep it. At the second, there is no feature requests, and for me, this library do its job. A few things may happen: the default binary, to use this not only as a library, and performance improvements if they will be needed.
+I have no roadmap for this project at the moment for a few reasons. To begin with, it is a simple library and I want to keep it that way. Secondly, there is no feature requests, and for me, this library does its job. A few things may happen: the default binary, to use this not only as a library, and performance improvements if they will be needed.
 
 ## Contributing
 

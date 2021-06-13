@@ -3,10 +3,11 @@ package main
 import (
 	"flag"
 	"fmt"
-	gonx "github.com/satyrius/gonx"
 	"io"
 	"os"
 	"strings"
+
+	gonx "github.com/iggy/gonx"
 )
 
 var format string
@@ -40,8 +41,8 @@ func main() {
 
 	// Make a chain of reducers to get some stats from log file
 	reducer := gonx.NewChain(
-		&gonx.Avg{[]string{"request_time", "read_time", "gen_time"}},
-		&gonx.Sum{[]string{"body_bytes_sent"}},
+		&gonx.Avg{Fields: []string{"request_time", "read_time", "gen_time"}},
+		&gonx.Sum{Fields: []string{"body_bytes_sent"}},
 		&gonx.Count{})
 	output := gonx.MapReduce(logReader, parser, reducer)
 	for res := range output {

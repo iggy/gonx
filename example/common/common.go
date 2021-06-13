@@ -3,10 +3,11 @@ package main
 import (
 	"flag"
 	"fmt"
-	gonx "github.com/satyrius/gonx"
 	"io"
 	"os"
 	"strings"
+
+	gonx "github.com/iggy/gonx"
 )
 
 var format string
