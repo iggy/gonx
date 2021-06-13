@@ -16,7 +16,9 @@ func benchLogParsing(b *testing.B, format string, line string) {
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		parser.ParseString(line)
+		// TODO not sure if this still does allocations or if go is smart
+		// enough to optimize this away, but I needed to shut up a linter
+		_, _ = parser.ParseString(line)
 	}
 }
 

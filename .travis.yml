@@ -8,7 +8,7 @@ go:
   - 1.12
   - 1.13
   - tip
-go_import_path: github.com/satyrius/gonx
+go_import_path: github.com/iggy/gonx
 install: make deps
 script:
   - go test -v -bench .
